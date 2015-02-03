@@ -51,6 +51,10 @@ typedef struct {
     // A small block inside holds most data
     // Reserved2 (public name)
     CLIENT_CONST unsigned char PRIVATE_VAR(small_storage, 2)[_vuint_storage];
+    // Returns a pointer to the array
+    // Be aware of endianness 
+    void* (*array)();
+    bool (*is_big_endian)();
 } vuint;
 
 #ifdef __cplusplus
