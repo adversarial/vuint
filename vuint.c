@@ -2,6 +2,14 @@
 #include <limits.h>
 
 #define UNTAG_PTR(p) ((void*)((uintptr_t)p & ~3))
+void* vuint_array(vuint* self) {
+    return (uintptr_t)self->data & VUINT_BIG_ENDIAN ? UNTAG_PTR(a->data) : (char*)UNTAG_PTR(a->data) + a->data_size;
+}
+
+bool vuint_is_big_endian(vuint* self) {
+    return (uintptr_t)self->data & VUINT_BIG_ENDIAN;
+}
+
 vuint* vuint_ctor(vuint* a, size_t cb, vuint_flags info) 
 {
     a->data_size = cb;
@@ -14,6 +22,8 @@ vuint* vuint_ctor(vuint* a, size_t cb, vuint_flags info)
         a->data = (void*)((uintptr_t)a->data | VUINT_EXTERNAL_STORAGE);
     }
     a->data =  (void*)((uintptr_t)a->data | (info & VUINT_BIG_ENDIAN));
+    a->array = vuint_array;
+    a->is_big_endian = vuint_is_big_endian;
     memset(UNTAG_PTR(a->data), 0, a->data_size);
     return a;
 }
