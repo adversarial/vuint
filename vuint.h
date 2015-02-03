@@ -53,8 +53,8 @@ typedef struct {
     CLIENT_CONST unsigned char PRIVATE_VAR(small_storage, 2)[_vuint_storage];
     // Returns a pointer to the array
     // Be aware of endianness 
-    void* (*array)();
-    bool (*is_big_endian)();
+    void* (*array)(void* self);
+    bool (*is_big_endian)(void* self);
 } vuint;
 
 #ifdef __cplusplus
