@@ -1,0 +1,18 @@
+==================================================================
+vuint - variable sized unsigned int operations
+Copyright (C) 2015 - vividrev -- see \LICENSE.TXT
+==================================================================
+
+Functions use namespace "vuint_". Use vuint_ctor() & uint_dtor()
+at the beginning/end of scopes respectively if size is bigger than
+_vuint_storage defined in "vuint.h".
+  
+  > vuint.h -- C/C++ obj header 
+  > vuint.c -- obj source
+  > LICENSE -- MIT license
+
+Project hosted at http://github.com/vividrev/
+
+ -- vividrev (vividrev@outlook.com) :: netrev.0fees.us
+ 
+==================================================================
