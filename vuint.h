@@ -16,46 +16,37 @@ Project hosted at http://github.com/vividrev/
 */
 
 #pragma once
+#include <stdlib.h>
+#include <string.h>
 #include <stdint.h>
 #include <stdbool.h>
 // WARNING nonstandard ptr math by conversion to uintptr_t
 
-#define RELEASE_BUILD 0
+typedef enum { ADD, SUB, MUL, DIV, AND, OR, XOR, NOT } vuint_oper;
 
-#if RELEASE_BUILD
-#   define PRIVATE_VAR(name, num) Reserved##num
-#   define CLIENT_CONST const
-#else
-#   define PRIVATE_VAR(name, num) name
-#   define CLIENT_CONST
-#endif
-
-typedef enum { ADD = '+', SUB = '-', MUL = '*', DIV = '/', AND = '&', OR = '|',
-                XOR = '^', NOT = '~' } vuint_oper;
-
-typedef void* vuint_tagptr;
+typedef int vuint_flags;
 
 // size of internal storage in struct ( do not change without rebuilding lib )
-static const int _vuint_storage = 8;
-
-typedef unsigned int vuint_flags;
-const vuint_flags PRIVATE_VAR(VUINT_EXTERNAL_STORAGE, 1) = 1 << 0,
-                  VUINT_BIG_ENDIAN                       = 1 << 1;
+#define _vuint_storage 8
 
 typedef struct {
     // Tagged 1 << 0 as small_storage ptr
     // Untag before dereferencing (x & ~3)
     // Reserved1 (public name)
-    CLIENT_CONST vuint_tagptr*  PRIVATE_VAR(data, 1);
-    CLIENT_CONST size_t       data_size;
+    void*        tagged_data;
+    size_t       data_size;
     // A small block inside holds most data
-    // Reserved2 (public name)
-    CLIENT_CONST unsigned char PRIVATE_VAR(small_storage, 2)[_vuint_storage];
+    unsigned char small_storage[_vuint_storage];
     // Returns a pointer to the array
     // Be aware of endianness 
-    void* (*array)(void* self);
+    // Untags data for user
+    void* (*item)(void* self);
     bool (*is_big_endian)(void* self);
 } vuint;
+
+// passing undefined values will have no effect
+const vuint_flags VUINT_EXTERNAL_STORAGE = 1,
+                  VUINT_BIG_ENDIAN       = 2;
 
 #ifdef __cplusplus
 extern 'C' {
@@ -80,4 +71,3 @@ void vuint_not(vuint* a);
 #ifdef __cplusplus
 }
 #endif
-#undef PRIVATE_VAR
